@@ -1,10 +1,10 @@
 {
-  "name": "Bordmester",
-  "short_name": "Bordmester",
+  "name": "Wheel of Fortune",
+  "short_name": "WheelOfFortune",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#4CAF50",
+  "theme_color": "#FF5733",
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
