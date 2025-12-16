@@ -15,7 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let startAngle = Math.random() * 2 * Math.PI;
   let arc = 0;
 
-  const baseColors = ["#33A852", "#E74C3C"]; // green for Yes, red for No
+  // ✅ Grøn (Yes) og Crimson (No)
+  const baseColors = ["#66FF00", "#DC143C"];
 
   function setStatus(msg) { statusDiv.textContent = msg || ""; }
 
