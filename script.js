@@ -140,11 +140,14 @@ document.addEventListener("DOMContentLoaded", () => {
     setStatus(`Added: ${n}`);
   }
 
-  // Yes/No button adds both names
+  // Yes/No button adds 3 of each
   yesNoBtn.addEventListener("pointerup", () => {
     ["Yes", "No"].forEach(name => {
-      if (!names.includes(name)) {
-        addName(name);
+      let count = names.filter(n => n === name).length;
+      if (count < 3) {
+        for (let i = count; i < 3; i++) {
+          addName(name);
+        }
       }
     });
   });
