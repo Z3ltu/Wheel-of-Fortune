@@ -170,21 +170,43 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-addNameBtn.addEventListener("pointerup", () => {
-  const n = (newNameInput.value || "").trim();
-  if (!n) return setStatus("Enter a name.");
-  if (["Yes","No"].some(fn => fn.toLowerCase() === n.toLowerCase())) {
-    return setStatus("Name already exists as Yes/No.");
-  }
-  // Tilføj navnet 2 gange
-  addName(n);
-  addName(n);
-  newNameInput.value = "";
-  setStatus(`Added: ${n} ×2`);
-});
+  // Tilføj navne 2 gange fra inputfeltet
+  addNameBtn.addEventListener("pointerup", () => {
+    const n = (newNameInput.value || "").trim();
+    if (!n) return setStatus("Enter a name.");
+    if (["Yes","No"].some(fn => fn.toLowerCase() === n.toLowerCase())) {
+      return setStatus("Name already exists as Yes/No.");
+    }
+    addName(n);
+    addName(n); // tilføj navnet 2 gange
+    newNameInput.value = "";
+    setStatus(`Added: ${n} ×2`);
+  });
+
+  // Klik på et felt i hjulet for at fjerne navnet (kun når hjulet står stille)
+  canvas.addEventListener("click", (event) => {
+    if (spinning) {
+      setStatus("You cannot remove names while the wheel is spinning.");
+      return;
+    }
+    if (!names.length) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left - canvas.width / 2;
+    const y = event.clientY - rect.top - canvas.height / 2;
+    const angle = Math.atan2(y, x);
+    let adjustedAngle = angle - startAngle;
+    if (adjustedAngle < 0) adjustedAngle += 2 * Math.PI;
+
+    const index = Math.floor(adjustedAngle / arc);
+    const clickedName = names[index];
+
+    // Fjern ALLE forekomster af det navn
+    names = names.filter(n => n !== clickedName);
+    drawWheel();
+    setStatus(`Removed: ${clickedName}`);
+  });
 
   drawWheel();
   setStatus("The wheel starts empty. Add names with the Yes/No button or the input field.");
 });
-
-
