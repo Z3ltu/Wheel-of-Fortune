@@ -14,8 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let startAngle = Math.random() * 2 * Math.PI;
   let arc = 0;
 
-  const fixedNames = ["Anders","Brian","Charlotte","Lars","Lars Henrik","Marianne","Patrick","Rikke"];
-  const baseColors = ["#FF5733","#33A852","#3369E8","#FF33A6","#FFB300","#8E44AD","#00CED1","#FF8C00","#2ECC71","#E74C3C","#3498DB"];
+  // Fixed names replaced with Yes/No
+  const fixedNames = ["Yes","No"];
+  const baseColors = ["#33A852","#E74C3C"]; // green/red for clarity
 
   function setStatus(msg) { statusDiv.textContent = msg || ""; }
 
@@ -178,36 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     addName(n);
     newNameInput.value = "";
-  });
-
-  canvas.addEventListener("pointerup", e => {
-    if (spinning) return;
-    if (!names.length) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    let adjusted = (Math.atan2(y, x) - startAngle) % (2 * Math.PI);
-    if (adjusted < 0) adjusted += 2 * Math.PI;
-    const idx = Math.floor(adjusted / arc);
-    const clicked = names[idx];
-    if (clicked) {
-      drawWheel(idx);
-      setTimeout(() => {
-        let count = 0;
-        names = names.filter(n => n !== clicked || count++ >= 2);
-        names = arrangeNames(names);
-        drawWheel();
-        setStatus(`Removed: ${clicked} × ${Math.min(count, 2)}`);
-
-        if (fixedNames.includes(clicked)) {
-          const btn = document.querySelector(`.nameBtn[data-name="${clicked}"]`);
-          if (btn) {
-            btn.classList.remove("disabled");
-            btn.disabled = false;
-          }
-        }
-      }, 500);
-    }
   });
 
   drawWheel();
