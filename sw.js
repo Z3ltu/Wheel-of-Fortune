@@ -1,16 +1,16 @@
-// Versionér cache-navnet ved hver release
-const CACHE_NAME = "bordmester-v6";
+// Version cache name for each release
+const CACHE_NAME = "wheel-of-fortune-v1";
 
-// Juster stierne så de passer til din hosting (root- eller subpath)
+// Adjust paths to match your hosting (root or subpath)
 const PRECACHE_URLS = [
   "./",
   "./index.html",
-  "./script.js?v=6",
+  "./script.js?v=1",
   "./manifest.json",
   "./icon.png"
 ];
 
-// Precache ved install og overtag med det samme
+// Precache on install and take control immediately
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(PRECACHE_URLS))
@@ -18,7 +18,7 @@ self.addEventListener("install", event => {
   self.skipWaiting();
 });
 
-// Ryd gamle caches og claim straks
+// Clear old caches and claim clients
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -28,14 +28,14 @@ self.addEventListener("activate", event => {
   event.waitUntil(self.clients.claim());
 });
 
-// Hjælpemetode: er det en navigation (HTML)?
+// Helper: is it a navigation (HTML)?
 function isNavigateRequest(request) {
   return request.mode === "navigate";
 }
 
-// Fetch-strategi:
-// - HTML: network-first med cache fallback (så opdateringer slår igennem)
-// - Andre assets: cache-first med netværks-fallback og runtime-caching
+// Fetch strategy:
+// - HTML: network-first with cache fallback
+// - Other assets: cache-first with network fallback + runtime caching
 self.addEventListener("fetch", event => {
   const { request } = event;
 
@@ -54,7 +54,6 @@ self.addEventListener("fetch", event => {
     caches.match(request).then(cached => {
       if (cached) return cached;
       return fetch(request).then(response => {
-        // Cache kun successful responses
         if (!response || response.status !== 200 || response.type !== "basic") {
           return response;
         }
