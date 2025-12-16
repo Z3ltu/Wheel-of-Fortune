@@ -74,8 +74,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function rotateWheel() {
-    const duration = 4000 + Math.random() * 4000;
-    const decelTime = 5000 + Math.random() * 3000;
+    const minDuration = 5000; // minimum 5 seconds
+    const duration = minDuration + Math.random() * 4000; // 5–9 seconds
+    const decelTime = 3000 + Math.random() * 2000;       // 3–5 seconds deceleration
     const startTime = performance.now();
     const endTime = startTime + duration;
     const decelStart = endTime - decelTime;
