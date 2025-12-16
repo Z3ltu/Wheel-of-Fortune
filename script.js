@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetBtn = document.getElementById("resetBtn");
   const newNameInput = document.getElementById("newNameInput");
   const addNameBtn = document.getElementById("addNameBtn");
+  const yesNoBtn = document.getElementById("yesNoBtn");
 
   let names = [];
   let firstName = null;
@@ -14,9 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let startAngle = Math.random() * 2 * Math.PI;
   let arc = 0;
 
-  // Fixed names replaced with Yes/No
-  const fixedNames = ["Yes","No"];
-  const baseColors = ["#33A852","#E74C3C"]; // green/red for clarity
+  const baseColors = ["#33A852", "#E74C3C"]; // green for Yes, red for No
 
   function setStatus(msg) { statusDiv.textContent = msg || ""; }
 
@@ -130,42 +129,21 @@ document.addEventListener("DOMContentLoaded", () => {
     setStatus("The wheel has been reset.");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     startAngle = Math.random() * 2 * Math.PI;
-
-    document.querySelectorAll(".nameBtn").forEach(btn => {
-      btn.classList.remove("disabled");
-      btn.disabled = false;
-    });
   });
 
   function addName(n) {
     if (spinning) return setStatus("You cannot add names while the wheel is spinning.");
     if (!firstName) firstName = n;
-    names.push(n, n);
+    names.push(n);
     names = arrangeNames(names);
     drawWheel();
-    setStatus(`Added: ${n} × 2`);
-
-    const btn = document.querySelector(`.nameBtn[data-name="${n}"]`);
-    if (btn) {
-      btn.classList.add("disabled");
-      btn.disabled = true;
-    }
+    setStatus(`Added: ${n}`);
   }
 
-  document.querySelectorAll(".nameBtn").forEach(btn => {
-    btn.addEventListener("pointerup", () => {
-      const name = btn.dataset.name;
-
-      if (btn.disabled) {
-        let count = 0;
-        names = names.filter(n => n !== name || count++ >= 2);
-        names = arrangeNames(names);
-        drawWheel();
-        setStatus(`Removed: ${name} × ${Math.min(count, 2)}`);
-
-        btn.classList.remove("disabled");
-        btn.disabled = false;
-      } else {
+  // Yes/No button adds both names
+  yesNoBtn.addEventListener("pointerup", () => {
+    ["Yes", "No"].forEach(name => {
+      if (!names.includes(name)) {
         addName(name);
       }
     });
@@ -174,13 +152,13 @@ document.addEventListener("DOMContentLoaded", () => {
   addNameBtn.addEventListener("pointerup", () => {
     const n = (newNameInput.value || "").trim();
     if (!n) return setStatus("Enter a name.");
-    if (fixedNames.some(fn => fn.toLowerCase() === n.toLowerCase())) {
-      return setStatus("Name already exists as a fixed name.");
+    if (["Yes","No"].some(fn => fn.toLowerCase() === n.toLowerCase())) {
+      return setStatus("Name already exists as Yes/No.");
     }
     addName(n);
     newNameInput.value = "";
   });
 
   drawWheel();
-  setStatus("The wheel starts empty. Add names with buttons or the input field.");
+  setStatus("The wheel starts empty. Add names with the Yes/No button or the input field.");
 });
