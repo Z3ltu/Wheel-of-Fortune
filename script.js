@@ -129,6 +129,8 @@ document.addEventListener("DOMContentLoaded", () => {
     setStatus("The wheel has been reset.");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     startAngle = Math.random() * 2 * Math.PI;
+    yesNoBtn.classList.remove("disabled");
+    yesNoBtn.disabled = false;
   });
 
   function addName(n) {
@@ -137,19 +139,33 @@ document.addEventListener("DOMContentLoaded", () => {
     names.push(n);
     names = arrangeNames(names);
     drawWheel();
-    setStatus(`Added: ${n}`);
   }
 
-  // Yes/No button adds 3 of each
+  // Yes/No button toggles 3× Yes and 3× No
   yesNoBtn.addEventListener("pointerup", () => {
-    ["Yes", "No"].forEach(name => {
-      let count = names.filter(n => n === name).length;
-      if (count < 3) {
-        for (let i = count; i < 3; i++) {
-          addName(name);
-        }
+    if (yesNoBtn.disabled) {
+      // Remove Yes and No (up to 3 each)
+      let countYes = 0, countNo = 0;
+      names = names.filter(n => {
+        if (n === "Yes" && countYes < 3) { countYes++; return false; }
+        if (n === "No" && countNo < 3) { countNo++; return false; }
+        return true;
+      });
+      names = arrangeNames(names);
+      drawWheel();
+      setStatus("Removed Yes and No ×3");
+      yesNoBtn.classList.remove("disabled");
+      yesNoBtn.disabled = false;
+    } else {
+      // Add 3× Yes and 3× No
+      for (let i = 0; i < 3; i++) {
+        addName("Yes");
+        addName("No");
       }
-    });
+      setStatus("Added Yes and No ×3");
+      yesNoBtn.classList.add("disabled");
+      yesNoBtn.disabled = true;
+    }
   });
 
   addNameBtn.addEventListener("pointerup", () => {
@@ -160,6 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     addName(n);
     newNameInput.value = "";
+    setStatus(`Added: ${n}`);
   });
 
   drawWheel();
