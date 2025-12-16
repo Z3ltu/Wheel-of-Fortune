@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Bordmester 🎉</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.png">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+    h1 { margin-bottom: 20px; }
+    canvas {
+      display: block;
+      margin: 0 auto 20px;
+      max-width: 400px;
+      width: 100%;
+      height: auto;
+      border: 2px solid #333;
+      border-radius: 10px;
+      background: #fff;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #spinBtn { background: #2196F3; color: #fff; border: none; }
+    #resetBtn { background: #f44336; color: #fff; border: none; }
+    .nameBtn { background: #4CAF50; color: #fff; border: none; }
+    .nameBtn.disabled { background: #999 !important; cursor: not-allowed; }
+    input {
+      padding: 8px;
+      font-size: 16px;
+      margin: 10px 0;
+      width: 80%;
+      max-width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    #status { margin-top: 15px; font-style: italic; color: #555; }
+    #result { font-weight: bold; margin-top: 15px; }
+    @media (max-width: 600px) {
+      canvas { max-width: 320px; }
+      button, input { font-size: 18px; padding: 12px; width: 90%; max-width: 320px; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Bordmester 🎉</h1>
+  <canvas id="wheel" width="400" height="400"></canvas>
+  <div>
+    <button id="spinBtn">Spin hjulet</button>
+    <button id="resetBtn">Nulstil hjulet</button>
+  </div>
+  <p id="result"></p>
+  <p id="status"></p>
+
+  <h3>Klik for at tilføje/fjerne faste navne:</h3>
+  <div id="fixedNames">
+    <button class="nameBtn" data-name="Anders">Anders</button>
+    <button class="nameBtn" data-name="Brian">Brian</button>
+    <button class="nameBtn" data-name="Charlotte">Charlotte</button>
+    <button class="nameBtn" data-name="Lars">Lars</button>
+    <button class="nameBtn" data-name="Lars Henrik">Lars Henrik</button>
+    <button class="nameBtn" data-name="Marianne">Marianne</button>
+    <button class="nameBtn" data-name="Patrick">Patrick</button>
+    <button class="nameBtn" data-name="Rikke">Rikke</button>
+  </div>
+
+  <h3>Tilføj nyt navn (ikke på listen):</h3>
+  <input type="text" id="newNameInput" placeholder="Skriv navn her">
+  <button id="addNameBtn">Tilføj navn</button>
+
+  <!-- Bemærk versionsnummer i script-link -->
+  <script src="script.js?v=5"></script>
+</body>
+</html>
