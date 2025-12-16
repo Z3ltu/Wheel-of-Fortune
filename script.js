@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let startAngle = Math.random() * 2 * Math.PI;
   let arc = 0;
 
-  // ✅ Grøn (Yes) og Crimson (No)
+  // Farver: Yes = Lime Green, No = Crimson
   const baseColors = ["#32CD32", "#DC143C"];
 
   function setStatus(msg) { statusDiv.textContent = msg || ""; }
@@ -65,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.restore();
     });
 
+    // Pointer triangle at top
     ctx.fillStyle = "#000";
     ctx.beginPath();
     ctx.moveTo(canvas.width / 2 - 15, 0);
@@ -75,8 +76,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function rotateWheel() {
-    const minDuration = 5000; // minimum 5 seconds
-    const duration = minDuration + Math.random() * 4000; // 5–9 seconds
+    const minDuration = 5000; // 5 seconds minimum
+    const duration = minDuration + Math.random() * 4000; // 5–9 seconds total
     const decelTime = 3000 + Math.random() * 2000;       // 3–5 seconds deceleration
     const startTime = performance.now();
     const endTime = startTime + duration;
@@ -87,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
         spinning = false;
         if (!names.length) return;
 
-        const pointerAngle = -Math.PI / 2;
+        const pointerAngle = -Math.PI / 2; // top
         let adjusted = (pointerAngle - (startAngle % (2 * Math.PI))) % (2 * Math.PI);
         if (adjusted < 0) adjusted += 2 * Math.PI;
         const index = Math.floor(adjusted / arc);
@@ -143,10 +144,22 @@ document.addEventListener("DOMContentLoaded", () => {
     drawWheel();
   }
 
-  // Yes/No button toggles 3× Yes and 3× No
+  // Common add handler: add typed name ×2
+  function handleAddName() {
+    const n = (newNameInput.value || "").trim();
+    if (!n) return setStatus("Enter a name.");
+    if (["Yes", "No"].some(fn => fn.toLowerCase() === n.toLowerCase())) {
+      return setStatus("Name already exists as Yes/No.");
+    }
+    addName(n);
+    addName(n);
+    newNameInput.value = "";
+    setStatus(`Added: ${n} ×2`);
+  }
+
+  // Yes/No toggle: add or remove 3× each
   yesNoBtn.addEventListener("pointerup", () => {
     if (yesNoBtn.disabled) {
-      // Remove Yes and No (up to 3 each)
       let countYes = 0, countNo = 0;
       names = names.filter(n => {
         if (n === "Yes" && countYes < 3) { countYes++; return false; }
@@ -159,39 +172,25 @@ document.addEventListener("DOMContentLoaded", () => {
       yesNoBtn.classList.remove("disabled");
       yesNoBtn.disabled = false;
     } else {
-      // Add 3× Yes and 3× No
-      for (let i = 0; i < 3; i++) {
-        addName("Yes");
-        addName("No");
-      }
+      for (let i = 0; i < 3; i++) { addName("Yes"); addName("No"); }
       setStatus("Added Yes and No ×3");
       yesNoBtn.classList.add("disabled");
       yesNoBtn.disabled = true;
     }
   });
 
-  // Tilføj navne 2 gange fra inputfeltet
-  addNameBtn.addEventListener("pointerup", () => {
-    const n = (newNameInput.value || "").trim();
-    if (!n) return setStatus("Enter a name.");
-    if (["Yes","No"].some(fn => fn.toLowerCase() === n.toLowerCase())) {
-      return setStatus("Name already exists as Yes/No.");
-    }
-    addName(n);
-    addName(n); // tilføj navnet 2 gange
-    newNameInput.value = "";
-    setStatus(`Added: ${n} ×2`);
-  });
+  // Button: add name ×2
+  addNameBtn.addEventListener("pointerup", handleAddName);
 
-  // Tillad Enter i inputfeltet
+  // Enter in input: add name ×2
   newNameInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" || event.code === "Enter" || event.keyCode === 13) {
       event.preventDefault();
-      addNameBtn.click();
+      handleAddName();
     }
   });
 
-  // Klik på et felt i hjulet for at fjerne navnet (kun når hjulet står stille)
+  // Click a slice to remove that name (only when not spinning)
   canvas.addEventListener("click", (event) => {
     if (spinning) {
       setStatus("You cannot remove names while the wheel is spinning.");
@@ -202,14 +201,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left - canvas.width / 2;
     const y = event.clientY - rect.top - canvas.height / 2;
-    const angle = Math.atan2(y, x);
-    let adjustedAngle = angle - startAngle;
+
+    // Ignore clicks outside the wheel radius
+    const r2 = x * x + y * y;
+    const radius = canvas.width / 2;
+    if (r2 > radius * radius) return;
+
+    let angle = Math.atan2(y, x);
+    if (angle < 0) angle += 2 * Math.PI;
+
+    let adjustedAngle = (angle - (startAngle % (2 * Math.PI)));
     if (adjustedAngle < 0) adjustedAngle += 2 * Math.PI;
 
     const index = Math.floor(adjustedAngle / arc);
     const clickedName = names[index];
 
-    // Fjern ALLE forekomster af det navn
     names = names.filter(n => n !== clickedName);
     drawWheel();
     setStatus(`Removed: ${clickedName}`);
