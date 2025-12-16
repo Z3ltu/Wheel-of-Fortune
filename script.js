@@ -183,6 +183,14 @@ document.addEventListener("DOMContentLoaded", () => {
     setStatus(`Added: ${n} ×2`);
   });
 
+  // Tillad Enter i inputfeltet
+  newNameInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      addNameBtn.click();
+    }
+  });
+
   // Klik på et felt i hjulet for at fjerne navnet (kun når hjulet står stille)
   canvas.addEventListener("click", (event) => {
     if (spinning) {
