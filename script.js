@@ -170,18 +170,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  addNameBtn.addEventListener("pointerup", () => {
-    const n = (newNameInput.value || "").trim();
-    if (!n) return setStatus("Enter a name.");
-    if (["Yes","No"].some(fn => fn.toLowerCase() === n.toLowerCase())) {
-      return setStatus("Name already exists as Yes/No.");
-    }
-    addName(n);
-    newNameInput.value = "";
-    setStatus(`Added: ${n}`);
-  });
+addNameBtn.addEventListener("pointerup", () => {
+  const n = (newNameInput.value || "").trim();
+  if (!n) return setStatus("Enter a name.");
+  if (["Yes","No"].some(fn => fn.toLowerCase() === n.toLowerCase())) {
+    return setStatus("Name already exists as Yes/No.");
+  }
+  // Tilføj navnet 2 gange
+  addName(n);
+  addName(n);
+  newNameInput.value = "";
+  setStatus(`Added: ${n} ×2`);
+});
 
   drawWheel();
   setStatus("The wheel starts empty. Add names with the Yes/No button or the input field.");
 });
+
 
