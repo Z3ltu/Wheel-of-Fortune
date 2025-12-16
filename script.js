@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let arc = 0;
 
   // ✅ Grøn (Yes) og Crimson (No)
-  const baseColors = ["#66FF00", "#DC143C"];
+  const baseColors = ["#32CD32", "#DC143C"];
 
   function setStatus(msg) { statusDiv.textContent = msg || ""; }
 
@@ -184,3 +184,4 @@ document.addEventListener("DOMContentLoaded", () => {
   drawWheel();
   setStatus("The wheel starts empty. Add names with the Yes/No button or the input field.");
 });
+
