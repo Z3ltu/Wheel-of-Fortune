@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const index = Math.floor(adjusted / arc);
         const chosen = names[index];
 
-        resultDiv.textContent = "🎉 Pilen peger på: " + chosen;
+        resultDiv.textContent = "🎉 The wheel landed on: " + chosen;
         setStatus("");
         return;
       }
@@ -115,10 +115,10 @@ document.addEventListener("DOMContentLoaded", () => {
   spinBtn.addEventListener("pointerup", () => {
     if (!spinning && names.length) {
       spinning = true;
-      setStatus("⏳ Spinner…");
+      setStatus("⏳ Spinning…");
       rotateWheel();
     } else if (!names.length) {
-      setStatus("Tilføj navne først.");
+      setStatus("Add names first.");
     }
   });
 
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     names = [];
     firstName = null;
     resultDiv.textContent = "";
-    setStatus("Hjulet er nulstillet.");
+    setStatus("The wheel has been reset.");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     startAngle = Math.random() * 2 * Math.PI;
 
@@ -137,12 +137,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function addName(n) {
-    if (spinning) return setStatus("Du kan ikke tilføje navne mens hjulet drejer.");
+    if (spinning) return setStatus("You cannot add names while the wheel is spinning.");
     if (!firstName) firstName = n;
     names.push(n, n);
     names = arrangeNames(names);
     drawWheel();
-    setStatus(`Tilføjet: ${n} × 2`);
+    setStatus(`Added: ${n} × 2`);
 
     const btn = document.querySelector(`.nameBtn[data-name="${n}"]`);
     if (btn) {
@@ -151,7 +151,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Knapper: grøn = tilføj, grå = fjern
   document.querySelectorAll(".nameBtn").forEach(btn => {
     btn.addEventListener("pointerup", () => {
       const name = btn.dataset.name;
@@ -161,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
         names = names.filter(n => n !== name || count++ >= 2);
         names = arrangeNames(names);
         drawWheel();
-        setStatus(`Fjernet: ${name} × ${Math.min(count, 2)}`);
+        setStatus(`Removed: ${name} × ${Math.min(count, 2)}`);
 
         btn.classList.remove("disabled");
         btn.disabled = false;
@@ -173,9 +172,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   addNameBtn.addEventListener("pointerup", () => {
     const n = (newNameInput.value || "").trim();
-    if (!n) return setStatus("Indtast et navn.");
+    if (!n) return setStatus("Enter a name.");
     if (fixedNames.some(fn => fn.toLowerCase() === n.toLowerCase())) {
-      return setStatus("Navnet findes allerede som fast navn.");
+      return setStatus("Name already exists as a fixed name.");
     }
     addName(n);
     newNameInput.value = "";
@@ -198,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
         names = names.filter(n => n !== clicked || count++ >= 2);
         names = arrangeNames(names);
         drawWheel();
-        setStatus(`Fjernet: ${clicked} × ${Math.min(count, 2)}`);
+        setStatus(`Removed: ${clicked} × ${Math.min(count, 2)}`);
 
         if (fixedNames.includes(clicked)) {
           const btn = document.querySelector(`.nameBtn[data-name="${clicked}"]`);
@@ -212,5 +211,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   drawWheel();
-  setStatus("Hjulet starter tomt. Tilføj navne med knapper eller feltet.");
+  setStatus("The wheel starts empty. Add names with buttons or the input field.");
 });
